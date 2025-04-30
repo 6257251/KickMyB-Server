@@ -57,9 +57,16 @@ public class ControllerTask {
         return serviceTask.detail(id, user);
     }
 
+    @DeleteMapping("/api/delete/{taskID}")
+    public @ResponseBody String delete(@PathVariable long taskID){
+
+
+        return "";
+    }
+
     /**
      * Accède au Principal stocké dans la mémoire vivre (HttpSession)
-     * La session de l'utilisateur est accédée grâce au  JSESSIONID qui était dans lq requête dans un cookie
+//     * La session de l'utilisateur est accédée grâce au  JSESSIONID qui était dans lq requête dans un cookie
      * Ensuite, on va à la base de données pour récupérer l'objet user complet.
      */
     private MUser currentUser() {
