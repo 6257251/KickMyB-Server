@@ -1,9 +1,11 @@
 package org.kickmyb.server;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kickmyb.server.account.MUser;
 import org.kickmyb.server.account.MUserRepository;
+import org.kickmyb.server.task.MTask;
 import org.kickmyb.server.task.ServiceTask;
 import org.kickmyb.transfer.AddTaskRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +40,30 @@ class ServiceTaskTests {
 
     @Autowired
     private ServiceTask serviceTask;
+
+    @Test
+    void testDeleteTask() throws ServiceTask.Empty, ServiceTask.TooShort, ServiceTask.Existing, ServiceTask.NotOwner {
+        MUser u = new MUser();
+        u.username = "M. Test";
+        u.password = passwordEncoder.encode("Passw0rd!");
+        userRepository.saveAndFlush(u);
+
+        AddTaskRequest atr = new AddTaskRequest();
+        atr.name = "Tâche de test";
+        atr.deadline = Date.from(new Date().toInstant().plusSeconds(3600));
+
+        serviceTask.addOne(atr, u);
+
+        if (serviceTask.home(u.id).size() != 1){
+            fail("La tâche n'a pas été ajoutée.");
+        }
+
+        MTask task = u.tasks.getFirst();
+
+        serviceTask.delete(task.id, u);
+
+        assertEquals(0, serviceTask.home(u.id).size());
+    }
 
     @Test
     void testAddTask() throws ServiceTask.Empty, ServiceTask.TooShort, ServiceTask.Existing {

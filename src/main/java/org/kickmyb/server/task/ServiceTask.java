@@ -10,8 +10,10 @@ public interface ServiceTask {
     class Existing extends Exception {}
     class TooShort extends Exception {}
     class Empty extends Exception {}
+    class NotOwner extends Exception {}
 
     // entity handling
+    void delete(long taskID, MUser user) throws NotOwner;
     TaskDetailResponse detail(Long id, MUser user);
     void addOne(AddTaskRequest req, MUser user) throws Existing, Empty, TooShort;
     void updateProgress(long taskID, int value);

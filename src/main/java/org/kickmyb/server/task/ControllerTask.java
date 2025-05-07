@@ -58,9 +58,11 @@ public class ControllerTask {
     }
 
     @DeleteMapping("/api/delete/{taskID}")
-    public @ResponseBody String delete(@PathVariable long taskID){
-
-
+    public @ResponseBody String delete(@PathVariable long taskID) throws ServiceTask.NotOwner {
+        System.out.println(("KICKB SERVER : Delete task with ID = " + taskID));
+        ConfigHTTP.attenteArticifielle();
+        MUser user = currentUser();
+        serviceTask.delete(taskID, user);
         return "";
     }
 
