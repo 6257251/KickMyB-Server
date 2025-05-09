@@ -32,11 +32,12 @@ public class ServiceTaskImpl implements ServiceTask {
 
     @Override
     public void delete(long taskID, MUser user) throws NotOwner {
-        MTask element = repo.findById(taskID).get();
+        MTask element = user.tasks.stream().filter(elt -> elt.id == taskID).findFirst().get();
         if(!user.tasks.contains(element)) throw new NotOwner();
-        repo.delete(element);
+
         user.tasks.remove(element);
-        repoUser.save(user);
+        repo.deleteById(element.id);
+        repoUser.saveAndFlush(user);
     }
 
     @Override
